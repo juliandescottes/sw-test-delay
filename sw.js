@@ -1,6 +1,12 @@
+function wait(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
 this.addEventListener('install', function(event) {
   event.waitUntil(
-    caches.open('v1').then(function(cache) {
+    caches.open('v1').then(wait(5000)).then(function(cache) {
       return cache.addAll([
         '/sw-test/',
         '/sw-test/index.html',

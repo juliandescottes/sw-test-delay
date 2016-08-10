@@ -1,12 +1,18 @@
-function wait(ms) {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms);
+function wait(ms, arg) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(arg);
+    }, ms);
   });
 }
 
 this.addEventListener('install', function(event) {
+  console.log('... installing');
   event.waitUntil(
-    caches.open('v1').then(wait(5000)).then(function(cache) {
+    caches.open('v1').then((cache) => {
+      return wait(5000, cache);
+    }).then((cache) => {
+      console.log('... installed');
       return cache.addAll([
         '/sw-test-delay/',
         '/sw-test-delay/index.html',
@@ -20,6 +26,13 @@ this.addEventListener('install', function(event) {
       ]);
     })
   );
+});
+
+this.addEventListener('activate', function(event) {
+  console.log("... activating");
+  event.waitUntil(wait(5000).then(() => {
+    console.log("... activated");
+  }));
 });
 
 this.addEventListener('fetch', function(event) {
